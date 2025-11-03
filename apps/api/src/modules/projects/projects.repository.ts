@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import type { UpdateProjectDto } from '@saas-template/core';
+import { DataSource, Repository } from 'typeorm';
 import { Project } from '@saas-template/database';
-import type { Repository } from 'typeorm';
+import type { CreateProjectDto, UpdateProjectDto } from '@saas-template/core';
 
 @Injectable()
-export class ProjectsRepository {
-  constructor(
-    @InjectRepository(Project)
-    private readonly repository: Repository<Project>
-  ) {}
+export class ProjectsRepository extends Repository<Project> {
+  constructor(private dataSource: DataSource) {
+    super(Project, dataSource.createEntityManager());
+  }
 
   async findAll(userId: string): Promise<Project[]> {
-    return this.repository.find({
+    return this.find({
       where: { userId },
       order: { createdAt: 'DESC' },
     });
   }
 
   async findById(id: string, userId: string): Promise<Project | null> {
-    return this.repository.findOne({
+    return this.findOne({
       where: { id, userId },
     });
   }
 
-  async create(userId: string, name: string, description?: string): Promise<Project> {
-    const project = this.repository.create({
+  async create(userId: string, dto: CreateProjectDto): Promise<Project> {
+    const project = this.create({
+      ...dto,
       userId,
-      name,
-      description: description ?? '',
     });
-    return this.repository.save(project);
+    return this.save(project);
   }
 
-  async update(id: string, userId: string, data: UpdateProjectDto): Promise<Project | null> {
+  async update(id: string, userId: string, dto: UpdateProjectDto): Promise<Project | null> {
     const project = await this.findById(id, userId);
     if (!project) {
       return null;
     }
-    Object.assign(project, data);
-    return this.repository.save(project);
+
+    Object.assign(project, dto);
+    return this.save(project);
   }
 
   async remove(id: string, userId: string): Promise<boolean> {
@@ -47,7 +45,8 @@ export class ProjectsRepository {
     if (!project) {
       return false;
     }
-    await this.repository.softRemove(project);
+
+    await this.softRemove(project);
     return true;
   }
 }

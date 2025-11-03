@@ -1,6 +1,6 @@
 'use client';
 
-export default function HomePage() {
+export default function UserManagementPage() {
   const { data: users, isLoading } = useUsers();
 
   if (isLoading) {
@@ -9,8 +9,8 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Home</h1>
-      <p className="text-muted-foreground mb-6">The landing page for the project management platform.</p>
+      <h1 className="text-3xl font-bold mb-6">User Management</h1>
+      <p className="text-muted-foreground mb-6">Admin page for managing user accounts.</p>
       
       <div className="grid gap-4">
         {users?.map((user: any) => (

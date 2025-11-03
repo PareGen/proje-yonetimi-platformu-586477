@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import type { User } from './user.entity';
 
@@ -7,14 +7,15 @@ export class Project extends BaseEntity {
   @Column()
   name!: string;
 
-  @Column({ type: 'text', default: '' })
-  description!: string;
+  @Column({ nullable: true })
+  description?: string;
 
-  @Column({ name: 'user_id' })
-  @Index('idx_projects_user_id')
-  userId!: string;
 
+@Column({ name: 'owner_id' })
+  ownerId!: string;
+
+  @Index('idx_projects_owner_id')
   @ManyToOne('User', 'projects')
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'owner_id' })
   user!: User;
 }

@@ -1,3 +1,6 @@
-export { BaseEntity } from './base.entity';
-export { User } from './user.entity';
-export { Project } from './project.entity';
+export * from './base.entity';
+export * from './user.entity';
+export * from './project.entity';
+export * from './task.entity';
+export * from './file.entity';
+export * from './report.entity';

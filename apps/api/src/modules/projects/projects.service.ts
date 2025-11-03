@@ -26,7 +26,7 @@ export class ProjectsService {
 
   async create(userId: string, dto: CreateProjectDto): Promise<ProjectResponseDto> {
     return this.uow.execute(async () => {
-      const project = await this.projectsRepository.create(userId, dto.name, dto.description);
+      const project = await this.projectsRepository.create(userId, dto);
       return this.toResponseDto(project);
     });
   }
@@ -55,7 +55,7 @@ export class ProjectsService {
       id: project.id,
       name: project.name,
       description: project.description,
-      userId: project.userId,
+      ownerId: project.ownerId,
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
     };
